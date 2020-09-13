@@ -1,44 +1,72 @@
 package ru.geekbrains.kotlin.data
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import ru.geekbrains.kotlin.data.entity.Note
+import java.util.*
 
 object NotesRepository {
-    private val notes: List<Note> = listOf(
+    private val notesLiveData = MutableLiveData<List<Note>>()
+
+    private val notes = mutableListOf(
         Note(
+            UUID.randomUUID().toString(),
             "Первая заметка",
             "Текст первой заметки",
-            0xfff06292.toInt()
+            Note.Color.BLUE
         ),
         Note(
+            UUID.randomUUID().toString(),
             "Вторая заметка",
             "Текст второй заметки",
-            0xff9575cd.toInt()
+            Note.Color.GREEN
         ),
         Note(
+            UUID.randomUUID().toString(),
             "Третья заметка",
             "Текст третьей заметки",
-            0xff64b5f6.toInt()
+            Note.Color.PINK
         ),
         Note(
+            UUID.randomUUID().toString(),
             "Четвертая заметка",
             "Текст четвертой заметки",
-            0xfff4db6ac.toInt()
+            Note.Color.RED
         ),
         Note(
+            UUID.randomUUID().toString(),
             "Пятая заметка",
             "Текст пятой заметки",
-            0xffb2ff59.toInt()
+            Note.Color.VIOLET
         ),
         Note(
+            UUID.randomUUID().toString(),
             "Шестая заметка",
             "Текст шестой заметки",
-            0xfffeb3b.toInt()
+            Note.Color.YELLOW
         )
     )
-//    fun getNotes() : List<Note> {
-//        return notes
-//    }
-fun getNotes(): List<Note> {
-    return notes
-}
+
+    init {
+        notesLiveData.value = notes
+    }
+
+    fun getNotes(): LiveData<List<Note>> {
+        return notesLiveData
+    }
+
+    fun saveNote(note: Note) {
+        addOrReplace(note)
+        notesLiveData.value = notes
+    }
+
+    private fun addOrReplace(note: Note) {
+        for (i in 0 until notes.size) {
+            if (notes[i] == note) {
+                notes[i] = note
+                return
+            }
+        }
+        notes.add(note)
+    }
 }
