@@ -11,8 +11,9 @@ import ru.geekbrains.kotlin.R
 import ru.geekbrains.kotlin.data.entity.Note
 import ru.geekbrains.kotlin.ui.common.getResources
 
-class NotesRVAdapter(val onItemClick: ((Note) -> Unit)? = null) :
-    RecyclerView.Adapter<NotesRVAdapter.ViewHolder>() {
+
+class NotesRVAdapter(val onItemClick: ((Note) -> Unit)? = null) : RecyclerView.Adapter<NotesRVAdapter.ViewHolder>() {
+
     var notes: List<Note> = listOf()
         set(value) {
             field = value
@@ -30,9 +31,10 @@ class NotesRVAdapter(val onItemClick: ((Note) -> Unit)? = null) :
         fun bind(note: Note) = with(itemView as CardView) {
             tv_title.text = note.title
             tv_text.text = note.text
-            val color = note?.color?.getResources()
+            val color = note.color.getResources()
             setCardBackgroundColor(ContextCompat.getColor(itemView.context, color))
-            itemView.setOnClickListener {
+
+            itemView.setOnClickListener{
                 onItemClick?.invoke(note)
             }
         }

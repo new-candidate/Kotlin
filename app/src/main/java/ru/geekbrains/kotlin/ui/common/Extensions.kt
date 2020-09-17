@@ -15,3 +15,4 @@ fun Note.Color.getResources(): Int {
     }
     return color
 }
+
