@@ -4,10 +4,10 @@ import ru.geekbrains.kotlin.data.NotesRepository
 import ru.geekbrains.kotlin.data.errors.NoAuthException
 import ru.geekbrains.kotlin.ui.base.BaseViewModel
 
-class SplashViewModel() : BaseViewModel<Boolean?, SplashViewState>() {
+class SplashViewModel(val notesRepository: NotesRepository) : BaseViewModel<Boolean?, SplashViewState>() {
 
     fun requestUser(){
-        NotesRepository.getCurrentUser().observeForever {
+        notesRepository.getCurrentUser().observeForever {
             viewStateLiveData.value = if(it != null){
                 SplashViewState(authenticated = true)
             } else {
