@@ -22,7 +22,7 @@ class NoteViewModel(val notesRepository: NotesRepository) : BaseViewModel<NoteVi
         notesRepository.getNoteById(noteId).observeForever { result ->
             result ?: return@observeForever
             when (result) {
-                is NoteResult.Succes<*> -> {
+                is NoteResult.Success<*> -> {
                     pendingNote = result.data as? Note
                     viewStateLiveData.value = NoteViewState(NoteViewState.Data(note = pendingNote))
                 }
@@ -37,7 +37,7 @@ class NoteViewModel(val notesRepository: NotesRepository) : BaseViewModel<NoteVi
                 result ?: return@observeForever
                 pendingNote = null
                 when (result) {
-                    is NoteResult.Succes<*> -> viewStateLiveData.value = NoteViewState(NoteViewState.Data(isDeleted = true))
+                    is NoteResult.Success<*> -> viewStateLiveData.value = NoteViewState(NoteViewState.Data(isDeleted = true))
                     is NoteResult.Error -> viewStateLiveData.value = NoteViewState(error = result.error)
                 }
             }
