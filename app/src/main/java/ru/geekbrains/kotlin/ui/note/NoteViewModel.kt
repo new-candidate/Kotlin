@@ -6,7 +6,7 @@ import ru.geekbrains.kotlin.data.entity.Note
 import ru.geekbrains.kotlin.data.model.NoteResult
 import ru.geekbrains.kotlin.ui.base.BaseViewModel
 
-class NoteViewModel : BaseViewModel<Note?, NoteViewState>() {
+class NoteViewModel(val notesRepository: NotesRepository) : BaseViewModel<NoteViewState.Data, NoteViewState>() {
 
     init {
         viewStateLiveData.value = NoteViewState()
@@ -19,28 +19,34 @@ class NoteViewModel : BaseViewModel<Note?, NoteViewState>() {
     }
 
     fun loadNote(noteId: String) {
-        val noteLiveData = NotesRepository.getNoteById(noteId)
-
-        val observer = object : Observer<NoteResult> {
-
-            override fun onChanged(result: NoteResult?) {
-                noteLiveData.removeObserver(this)
-                when (result) {
-                    is NoteResult.Succes<*> -> viewStateLiveData.value =
-                        NoteViewState(note = result.data as? Note)
-                    is NoteResult.Error -> viewStateLiveData.value =
-                        NoteViewState(error = result.error)
+        notesRepository.getNoteById(noteId).observeForever { result ->
+            result ?: return@observeForever
+            when (result) {
+                is NoteResult.Success<*> -> {
+                    pendingNote = result.data as? Note
+                    viewStateLiveData.value = NoteViewState(NoteViewState.Data(note = pendingNote))
                 }
+                is NoteResult.Error -> viewStateLiveData.value = NoteViewState(error = result.error)
             }
         }
-        NotesRepository.getNoteById(noteId).observeForever {
-            noteLiveData.observeForever (observer)
+    }
+
+    fun deleteNote() {
+        pendingNote?.let {
+            notesRepository.deleteNote(it.id).observeForever { result ->
+                result ?: return@observeForever
+                pendingNote = null
+                when (result) {
+                    is NoteResult.Success<*> -> viewStateLiveData.value = NoteViewState(NoteViewState.Data(isDeleted = true))
+                    is NoteResult.Error -> viewStateLiveData.value = NoteViewState(error = result.error)
+                }
+            }
         }
     }
 
     override fun onCleared() {
         pendingNote?.let {
-            NotesRepository.saveNote(it)
+            notesRepository.saveNote(it)
         }
     }
 

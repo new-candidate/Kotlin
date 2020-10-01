@@ -15,7 +15,7 @@ data class Note(
 ) :
     Parcelable {
     enum class Color {
-YELLOW, GREEN, BLUE, RED, VIOLET, PINK
+        WHITE, YELLOW, GREEN, BLUE, RED, VIOLET, PINK
     }
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
