@@ -20,9 +20,7 @@ import ru.geekbrains.kotlin.ui.note.NoteActivity
 import ru.geekbrains.kotlin.ui.splash.SplashActivity
 
 
-class MainActivity : BaseActivity<List<Note>?, MainViewState>(), LogoutDialog.LogoutListener {
-
-    val firestoreProvider: FirestoreProvider by inject()
+class MainActivity : BaseActivity<List<Note>?>(), LogoutDialog.LogoutListener {
 
     companion object {
         fun start(context: Context) = Intent(context, MainActivity::class.java).apply {
@@ -50,7 +48,11 @@ class MainActivity : BaseActivity<List<Note>?, MainViewState>(), LogoutDialog.Lo
         }
     }
 
-
+    override fun renderData(data: List<Note>?) {
+        data?.let {
+            adapter.notes = it
+        }
+    }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean =
         MenuInflater(this).inflate(R.menu.main, menu).let { true }
@@ -73,13 +75,5 @@ class MainActivity : BaseActivity<List<Note>?, MainViewState>(), LogoutDialog.Lo
                 finish()
             }
     }
-
-    override fun renderData(data: List<Note>?) {
-        data?.let {
-            adapter.notes = it
-        }
-    }
-
-
 }
 

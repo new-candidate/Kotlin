@@ -8,19 +8,16 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.Menu
 import android.view.MenuItem
-import androidx.core.content.ContextCompat
-import org.koin.android.viewmodel.ext.android.viewModel
-import kotlinx.android.synthetic.main.activity_main.toolbar
 import kotlinx.android.synthetic.main.activity_note.*
 import ru.geekbrains.kotlin.R
 import ru.geekbrains.kotlin.data.entity.Note
 import ru.geekbrains.kotlin.extensions.getColorInt
 import ru.geekbrains.kotlin.ui.base.BaseActivity
-import ru.geekbrains.kotlin.ui.common.getResources
 import java.text.SimpleDateFormat
+import org.koin.android.viewmodel.ext.android.viewModel
 import java.util.*
 
-class NoteActivity : BaseActivity<NoteViewState.Data, NoteViewState>() {
+class NoteActivity : BaseActivity<NoteData>() {
     companion object {
         private const val NOTE_KEY = "note"
         private const val DATE_FORMAT = "dd.MM.yy HH:mm"
@@ -61,7 +58,7 @@ class NoteActivity : BaseActivity<NoteViewState.Data, NoteViewState>() {
         }
     }
 
-    override fun renderData(data: NoteViewState.Data) {
+    override fun renderData(data: NoteData) {
         if (data.isDeleted) {
             finish()
             return
